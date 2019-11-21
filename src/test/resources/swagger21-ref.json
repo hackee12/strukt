@@ -1,0 +1,21 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "package": {
+      "description": "Package description",
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/packageName"
+        }
+      }
+    },
+    "packageName": {
+      "description": "Describe Package Name",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "successfulJob": {
+      "type": "object",
+      "required": [
+        "propertyA"
+      ],
+      "properties": {
+        "propertyA": {
+          "type": "string",
+          "example": "propA"
+        },
+        "propertyB": {
+          "description": "Describe Success PropertyB",
+          "type": "integer"
+        },
+        "propertyC": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "schema": {
+        "$ref": "#/definitions/successfulJob"
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+.gradle
+build
+.idea
+out
+
+# nasty Mac
+.DS_Store

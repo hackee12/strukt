@@ -1,0 +1,64 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "complexObject": {
+      "description": "Describe Complex Object",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/commonPart"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "stringProperty": {
+              "description": "Describe stringProperty",
+              "type": "string"
+            },
+            "booleanProperty": {
+              "description": "Describe booleanProperty",
+              "type": "boolean"
+            },
+            "integerProperty": {
+              "description": "Describe integerProperty",
+              "type": "integer",
+              "min": 0,
+              "max": 99
+            },
+            "refProperty": {
+              "$ref": "#/definitions/refProperty"
+            }
+          }
+        }
+      ]
+    },
+    "commonPart": {
+      "type": "object",
+      "required": [
+        "code",
+        "name"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "ABC123"
+        },
+        "name": {
+          "description": "Describe Common Name",
+          "type": "string"
+        },
+        "description": {
+          "description": "Common Description",
+          "type": "string"
+        }
+      }
+    },
+    "refProperty": {
+      "description": "Describe refProperty",
+      "type": "string",
+      "pattern": "[A-Za-z0-9]{1,20}",
+      "minLength": 1,
+      "maxLength": 20
+    }
+  }
+}

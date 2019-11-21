@@ -1,0 +1,28 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "error": {
+      "type": "object",
+      "description": "Describe error",
+      "title": "Error",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "Describe error code",
+          "type": "integer"
+        },
+        "message": {
+          "title": "Error Message",
+          "type": "string"
+        },
+        "origin": {
+          "type": "string",
+          "example": "web"
+        }
+      }
+    }
+  }
+}
