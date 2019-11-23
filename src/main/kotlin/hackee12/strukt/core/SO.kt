@@ -125,7 +125,7 @@ data class SO private constructor(
                     refDescription = refDescription,
                     schemaDescription = schemaDescription,
 
-                    leftovers = leftovers.toList(),
+                    leftovers = leftovers,
 
                     path = sj.toString()
             )
@@ -133,7 +133,6 @@ data class SO private constructor(
     }
 
     fun asText(): String = path
-    fun asCSV(): String = "$path,$type,${if (isRequired == true || inRequired == true) MANDATORY else OPTIONAL}"
     fun asTSV(): String = "$path \t $type \t ${if (isRequired == true || inRequired == true) MANDATORY else OPTIONAL} \t ${authorizedValues ?: ""}"
 }
 

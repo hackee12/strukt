@@ -46,13 +46,13 @@ class Swagger21(private val rootJE: JsonElement) {
         val je = definedInJE.asJsonObject[definedJOId]
         val sos = mutableListOf<SO>()
         sos.addAll(parse(parentPath, je, entryName, inRequired, inAllOf))
-        return sos.toList()
+        return sos
     }
 
     private fun fromSchema(parentPath: String, targetJE: JsonElement, entryName: String, inRequired: Boolean, inAllOf: Boolean): List<SO> {
         val sos = mutableListOf<SO>()
         sos.addAll(parse(parentPath, targetJE.asJsonObject[SCHEMA], entryName, inRequired, inAllOf))
-        return sos.toList()
+        return sos
     }
 
     private fun fromArray(parentPath: String, targetJE: JsonElement, entryName: String, inRequired: Boolean, inAllOf: Boolean): List<SO> {
@@ -74,7 +74,7 @@ class Swagger21(private val rootJE: JsonElement) {
         val so = sob.build()
         val sos = mutableListOf(so)
         sos.addAll(parse(so.path, targetJE.asJsonObject[ITEMS], "", inRequired, inAllOf))
-        return sos.toList()
+        return sos
     }
 
     private fun fromAllOf(parentPath: String, targetJE: JsonElement, entryName: String, inRequired: Boolean): List<SO> {
@@ -98,7 +98,7 @@ class Swagger21(private val rootJE: JsonElement) {
         for (entry in targetJE.asJsonObject[ALL_OF].asJsonArray) {
             sos.addAll(parse(so.path, entry, "", inRequired, inAllOf = true))
         }
-        return sos.toList()
+        return sos
     }
 
     // TODO: REVISE THIS FUNCTION
@@ -121,7 +121,7 @@ class Swagger21(private val rootJE: JsonElement) {
                 val (k, v) = p
                 sos.addAll(parse(parentPath, v, k, k in rpSet, inAllOf))
             }
-            return sos.toList()
+            return sos
         }
 
         val sos = mutableListOf<SO>()
@@ -153,7 +153,7 @@ class Swagger21(private val rootJE: JsonElement) {
             sos.add(so)
             sos.addAll(resolveProperties(so.path, targetJE, inAllOf = false))
         }
-        return sos.toList()
+        return sos
     }
 
 
