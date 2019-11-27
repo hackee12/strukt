@@ -30,3 +30,9 @@ version = File("version").readText().trim()
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+tasks.jar {
+    manifest {
+        attributes(Pair("Main-Class", "hackee12.strukt.cmd.MainKt"))
+    }
+}
