@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonElement;
@@ -19,19 +18,18 @@ import hackee12.strukt.json.BOMSkipperKt;
 class Swagger21Test {
 
   private static final String EMPTY_STRING = "";
-  private JsonParser jp;
+  private static final String RESOURCES_DIR = "src/test/resources/";
 
-  @BeforeEach
-  void before() {
-    jp = new JsonParser();
+  private List<SO> parse(String fileName, String definedIn, String entryName) {
+    final JsonReader jr = BOMSkipperKt.jsonReader(new File(RESOURCES_DIR + fileName));
+    final JsonElement rootJE = new JsonParser().parse(jr);
+    final Swagger21 parser = new Swagger21(rootJE);
+    return parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get(definedIn), entryName);
   }
 
   @Test
   void fromPlain() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-plain.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "action");
+    final List<SO> sos = parse("swagger21-plain.json", "definitions", "action");
     assertEquals(1, sos.size());
     final SO action = new SOB()
         .entryName("action")
@@ -44,10 +42,7 @@ class Swagger21Test {
 
   @Test
   void fromContainer() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-container.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "error");
+    final List<SO> sos = parse("swagger21-container.json", "definitions", "error");
     assertEquals(4, sos.size());
     final SO error = new SOB()
         .entryName("error")
@@ -83,10 +78,8 @@ class Swagger21Test {
 
   @Test
   public void implicitObjectType() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-implicit-object-type.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "container");
+    final List<SO> sos =
+        parse("swagger21-implicit-object-type.json", "definitions", "container");
     assertEquals(3, sos.size());
     final SO container = new SOB()
         .type("object")
@@ -112,11 +105,69 @@ class Swagger21Test {
   }
 
   @Test
+  void additionalProperties() {
+    final List<SO> entitySOs =
+        parse("swagger21-additionalProperties.json", "definitions", "entity");
+    assertEquals(4, entitySOs.size());
+    final SO entity = new SOB()
+        .entryName("entity")
+        .type("object")
+        .description("Describe entity")
+        .build();
+    final SO entityCode = new SOB()
+        .parentPath("entity")
+        .entryName("code")
+        .description("Describe entityCode")
+        .type("integer")
+        .inRequired(true)
+        .build();
+    final SO entityText = new SOB()
+        .parentPath("entity")
+        .entryName("text")
+        .description("Describe entityText")
+        .type("string")
+        .build();
+    final SO entityKey = new SOB()
+        .parentPath("entity")
+        .entryName("<key>")
+        .type("boolean")
+        .description("Describe additionalProperty")
+        .build();
+    assertEquals(entity, entitySOs.get(0), "Entity doesn't match");
+    assertEquals(entityCode, entitySOs.get(1), "EntityCode doesn't match");
+    assertEquals(entityText, entitySOs.get(2), "EntityText doesn't match");
+    assertEquals(entityKey, entitySOs.get(3), "EntityKey doesn't match");
+
+    final List<SO> string2array =
+        parse("swagger21-additionalProperties.json", "definitions", "string2array");
+    assertEquals(4, entitySOs.size());
+    final SO s2a = new SOB()
+        .entryName("string2array")
+        .type("object")
+        .description("Describe string2array")
+        .build();
+    final SO s2aKey = new SOB()
+        .parentPath("string2array")
+        .entryName("<key>")
+        .type("array")
+        .description("(string) -> (array of string)")
+        .maxItems(99)
+        .build();
+    final SO s2aValue = new SOB()
+        .parentPath("string2array.<key>[]")
+        .entryName(EMPTY_STRING)
+        .type("string")
+        .minLength(1)
+        .maxLength(999)
+        .build();
+    assertEquals(s2a, string2array.get(0), "string2array doesn't match");
+    assertEquals(s2aKey, string2array.get(1), "string2arrayKey doesn't match");
+    assertEquals(s2aValue, string2array.get(2), "string2arrayValue doesn't match");
+  }
+
+  @Test
   void fromRef() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-ref.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "package");
+    final List<SO> sos = parse("swagger21-ref.json", "definitions", "package");
     assertEquals(2, sos.size());
     final SO pakage = new SOB()
         .entryName("package")
@@ -136,10 +187,7 @@ class Swagger21Test {
 
   @Test
   void fromSchema() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-schema.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("responses"), "success");
+    final List<SO> sos = parse("swagger21-schema.json", "responses", "success");
     assertEquals(4, sos.size());
     final SO success = new SOB()
         .entryName("success")
@@ -172,10 +220,7 @@ class Swagger21Test {
 
   @Test
   void fromArray() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-array.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "packages");
+    final List<SO> sos = parse("swagger21-array.json", "definitions", "packages");
     assertEquals(3, sos.size());
     final SO arrayOfPakages = new SOB()
         .entryName("packages")
@@ -186,7 +231,7 @@ class Swagger21Test {
         .build();
     final SO pakageInPakages = new SOB()
         .parentPath("packages[]")
-        .entryName("")
+        .entryName(EMPTY_STRING)
         .type("object")
         .build();
     final SO pakageName = new SOB()
@@ -202,10 +247,7 @@ class Swagger21Test {
 
   @Test
   void fromAllOf() {
-    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-allOf.json"));
-    final JsonElement rootJE = jp.parse(jr);
-    final Swagger21 parser = new Swagger21(rootJE);
-    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "complexObject");
+    final List<SO> sos = parse("swagger21-allOf.json", "definitions", "complexObject");
     assertEquals(8, sos.size());
     final SO complexObject = new SOB()
         .type("object")

@@ -2,7 +2,6 @@ package hackee12.strukt.core.swagger20
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import hackee12.strukt.core.SO
 import hackee12.strukt.core.exception.fail
 
@@ -109,19 +108,20 @@ class Swagger21(private val rootJE: JsonElement) {
         // TODO: REVISE THIS FUNCTION
         fun resolveProperties(parentPath: String, parentJE: JsonElement, inAllOf: Boolean): List<SO> {
 
-            val requiredJA: JsonArray? = parentJE.asJsonObject[REQUIRED]?.asJsonArray
+            val parentJO = parentJE.asJsonObject
+
+            val requiredJA: JsonArray? = parentJO[REQUIRED]?.asJsonArray
             val rpSet = mutableSetOf<String>()
             requiredJA?.forEach { rpSet.add(it.asString) }
 
-            val allProps = mutableListOf<Map.Entry<String, JsonElement>>()
-            parentJE.asJsonObject[PROPERTIES]?.asJsonObject?.entrySet()?.toCollection(allProps)
-            // TODO: NEEDS TEST COVERAGE
-            parentJE.asJsonObject.entrySet().filter { (k, _) -> k == ADDITIONAL_PROPERTIES }.forEach { allProps.add(it) }
-
             val sos = mutableListOf<SO>()
-            for (p in allProps) {
-                val (k, v) = p
-                sos.addAll(parse(parentPath, v, k, k in rpSet, inAllOf))
+
+            if (parentJO.has(PROPERTIES)) {
+                val properties = parentJO[PROPERTIES].asJsonObject.entrySet()
+                properties.forEach { (k, v) -> sos.addAll(parse(parentPath, v, k, k in rpSet, inAllOf)) }
+            }
+            if (parentJO.has(ADDITIONAL_PROPERTIES)) {
+                sos.addAll(parse(parentPath, parentJO[ADDITIONAL_PROPERTIES], "<key>", false, inAllOf))
             }
             return sos
         }

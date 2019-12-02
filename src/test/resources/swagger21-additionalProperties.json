@@ -1,0 +1,39 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "entity": {
+      "description": "Describe entity",
+      "type": "object",
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "description": "Describe entityCode",
+          "type": "integer"
+        },
+        "text": {
+          "description": "Describe entityText",
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "description": "Describe additionalProperty",
+        "type": "boolean"
+      }
+    },
+    "string2array": {
+      "description": "Describe string2array",
+      "additionalProperties": {
+        "description": "(string) -> (array of string)",
+        "type": "array",
+        "maxItems": 99,
+        "items": {
+          "type": "string",
+          "maxLength": 999,
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
