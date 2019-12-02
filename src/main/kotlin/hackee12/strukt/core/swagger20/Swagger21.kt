@@ -129,11 +129,11 @@ class Swagger21(private val rootJE: JsonElement) {
             sos.addAll(resolveProperties(parentPath, targetJE, inAllOf = true))
         } else {
             val sob = SO.SOB()
+            sob.type(OBJECT)
             sob.parentPath(parentPath)
             sob.entryName(entryName)
             if (inRequired) sob.inRequired(true)
-            val targetJO: JsonObject = targetJE.asJsonObject
-            for (entry in targetJO.entrySet()) {
+            for (entry in targetJE.asJsonObject.entrySet()) {
                 val (k, v) = entry
                 // TODO: analyze
                 if (v.isJsonPrimitive) when (k) {
@@ -193,7 +193,7 @@ class Swagger21(private val rootJE: JsonElement) {
     private fun JsonElement.isSchema(): Boolean = asJsonObject.has(SCHEMA)
     private fun JsonElement.isAllOf(): Boolean = asJsonObject.has(ALL_OF)
     private fun JsonElement.isArray(): Boolean = asJsonObject.has(ITEMS) && asJsonObject[TYPE].asString == ARRAY
-    private fun JsonElement.isContainer(): Boolean = asJsonObject.has(TYPE) && asJsonObject[TYPE].asString == OBJECT
+    private fun JsonElement.isContainer(): Boolean = asJsonObject.has(PROPERTIES) || asJsonObject.has(ADDITIONAL_PROPERTIES)
 
 }
 

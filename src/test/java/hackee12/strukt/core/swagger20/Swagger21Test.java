@@ -82,6 +82,36 @@ class Swagger21Test {
   }
 
   @Test
+  public void implicitObjectType() {
+    final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-implicit-object-type.json"));
+    final JsonElement rootJE = jp.parse(jr);
+    final Swagger21 parser = new Swagger21(rootJE);
+    final List<SO> sos = parser.parse(EMPTY_STRING, rootJE.getAsJsonObject().get("definitions"), "container");
+    assertEquals(3, sos.size());
+    final SO container = new SOB()
+        .type("object")
+        .entryName("container")
+        .description("Describe container")
+        .build();
+    final SO containerCode = new SOB()
+        .parentPath("container")
+        .entryName("code")
+        .type("integer")
+        .description("Container code")
+        .inRequired(true)
+        .build();
+    final SO containerText = new SOB()
+        .parentPath("container")
+        .entryName("text")
+        .type("string")
+        .title("Container text")
+        .build();
+    assertEquals(container, sos.get(0), "Container doesn't match");
+    assertEquals(containerCode, sos.get(1), "ContainerCode doesn't match");
+    assertEquals(containerText, sos.get(2), "ContainerText doesn't match");
+  }
+
+  @Test
   void fromRef() {
     final JsonReader jr = BOMSkipperKt.jsonReader(new File("src/test/resources/swagger21-ref.json"));
     final JsonElement rootJE = jp.parse(jr);

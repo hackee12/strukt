@@ -1,0 +1,21 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "container": {
+      "description": "Describe container",
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "description": "Container code",
+          "type": "integer"
+        },
+        "text": {
+          "title": "Container text",
+          "type": "string"
+        }
+      }
+    }
+  }
+}
