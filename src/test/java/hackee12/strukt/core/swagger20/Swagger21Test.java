@@ -181,6 +181,8 @@ class Swagger21Test {
         .entryName("packages")
         .type("array")
         .description("Describe packages")
+        .minItems(1)
+        .maxItems(5)
         .build();
     final SO pakageInPakages = new SOB()
         .parentPath("packages[]")

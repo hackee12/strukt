@@ -68,6 +68,8 @@ class Swagger21(private val rootJE: JsonElement) {
                 // TODO: analyze
                 ITEMS -> {
                 }
+                MIN_ITEMS -> sob.minItems(v.asInt)
+                MAX_ITEMS -> sob.maxItems(v.asInt)
                 else -> sob.leftovers(k)
             }
         }
@@ -183,6 +185,8 @@ class Swagger21(private val rootJE: JsonElement) {
                 MAX_LENGTH -> sob.maxLength(v.asInt)
                 MIN_OCCURRENCE -> sob.minOccurrence(v.asInt)
                 MAX_OCCURRENCE -> sob.maxOccurrence(v.asInt)
+                MIN_ITEMS -> sob.minItems(v.asInt)
+                MAX_ITEMS -> sob.maxItems(v.asInt)
                 else -> sob.leftovers(k)
             }
         }
@@ -227,3 +231,5 @@ private const val MIN_LENGTH = "minLength"
 private const val MAX_LENGTH = "maxLength"
 private const val MIN_OCCURRENCE = "minOccurrence"
 private const val MAX_OCCURRENCE = "maxOccurrence"
+private const val MIN_ITEMS = "minItems"
+private const val MAX_ITEMS = "maxItems"

@@ -25,6 +25,8 @@ data class SO private constructor(
         val maxLength: Int?,
         val minOccurrence: Int?,
         val maxOccurrence: Int?,
+        val minItems: Int?,
+        val maxItems: Int?,
 
         val refDescription: String?,
         val schemaDescription: String?,
@@ -57,6 +59,8 @@ data class SO private constructor(
             private var maxLength: Int? = null,
             private var minOccurrence: Int? = null,
             private var maxOccurrence: Int? = null,
+            private var minItems: Int? = null,
+            private var maxItems: Int? = null,
 
             private var refDescription: String? = null,
             private var schemaDescription: String? = null,
@@ -86,6 +90,8 @@ data class SO private constructor(
         fun maxLength(maxLength: Int) = apply { this.maxLength = maxLength }
         fun minOccurrence(minOccurrence: Int) = apply { this.minOccurrence = minOccurrence }
         fun maxOccurrence(maxOccurrence: Int) = apply { this.maxOccurrence = maxOccurrence }
+        fun minItems(minItems: Int) = apply { this.minItems = minItems }
+        fun maxItems(maxItems: Int) = apply { this.maxItems = maxItems }
 
         fun refDescription(rDesk: String) = apply { this.refDescription = rDesk }
         fun schemaDescription(sDesk: String) = apply { this.schemaDescription = sDesk }
@@ -121,6 +127,8 @@ data class SO private constructor(
                     maxLength = maxLength,
                     minOccurrence = minOccurrence,
                     maxOccurrence = maxOccurrence,
+                    minItems = minItems,
+                    maxItems = maxItems,
 
                     refDescription = refDescription,
                     schemaDescription = schemaDescription,
